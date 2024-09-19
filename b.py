@@ -489,8 +489,9 @@ class SubQueryAgent:
     for c in contexts:
       if c not in uni:
         uni.append(c)
+        print(uni)
     return "@@".join(uni)
-print(nui)
+
 sq_agent = RunnableLambda(SubQueryAgent(vb_list, gq_model, cross_encoder).query)
 
 class AlternateQuestionAgent:
