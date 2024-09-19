@@ -473,7 +473,7 @@ class SubQueryAgent:
     print(f"Sub question: {sub_q}\n")
 
     contexts = []
-      pritn
+      
     prompt = f"""You are given a main Question {question} and a pair of its subquestion and related sub context.
     You must generate a question based on the main question, and all of the sub-question and sub-contexts pairs.
     Output should in the format: sub-question : <sub_question>"""
