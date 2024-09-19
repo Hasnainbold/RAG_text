@@ -941,24 +941,37 @@ st.session_state['q_model'] = q_model
 st.title('Multi-modal RAG based LLM for Information Retrieval')
 st.subheader('Converse with our Chatbot')
 st.markdown('Enter a pdf file as a source.')
-uploaded_file = st.file_uploader("Choose an pdf document...", type=["pdf"], accept_multiple_files=False)
+
+uploaded_file = st.file_uploader("Choose a PDF document...", type=["pdf"], accept_multiple_files=False)
+
 if uploaded_file is not None:
-    with open(uploaded_file.name, mode='wb') as w:
-        print("i ma here")
-        w.write(uploaded_file.getvalue())
-    if not os.path.exists(os.path.join(os.getcwd(), 'pdfs')):
-        os.makedirs(os.path.join(os.getcwd(), 'pdfs'))
-    shutil.move(uploaded_file.name, os.path.join(os.getcwd(), 'pdfs'))
-    st.session_state['pdf_file'] = uploaded_file.name
-    with st.spinner('Extracting'):
-        vb_list = read_pdf(pdf_file)    #this is the another change i have done here
-    st.session_state['vb_list'] = vb_list
-    question = st.text_input("Enter your question:", "how names are present in the context?")
+    # Create a directory for storing PDF files if it doesn't exist
+    pdf_directory = os.path.join(os.getcwd(), 'pdfs')
+    if not os.path.exists(pdf_directory):
+        os.makedirs(pdf_directory)
+
+    # Define the file path where the PDF will be saved
+    file_path = os.path.join(pdf_directory, uploaded_file.name)
+
+    # Write the file to the specified path
+    with open(file_path, mode='wb') as f:
+        f.write(uploaded_file.getbuffer())
+
+    # Store the file path in session state
+    st.session_state['pdf_file'] = file_path
+
+    # Extracting the PDF content
+    with st.spinner('Extracting...'):
+        # Assuming read_pdf function takes the file path as input
+        vb_list = read_pdf(st.session_state['pdf_file'])  # Corrected to use session state
+        st.session_state['vb_list'] = vb_list
+
+    # Ask the user for a question
+    question = st.text_input("Enter your question:", "How are names present in the context?")
 
     if st.button("Submit Question"):
-        # Step 3: Display the answer to the question
+        # Display the answer to the question
         with st.spinner('Fetching the answer...'):
-            # Fetch the answer using the query function
+            # Assuming query is a function that takes the question as input
             answer = query(question)
             st.success(f"Answer: {answer}")
-    # st.switch_page('pages/rag.py')
