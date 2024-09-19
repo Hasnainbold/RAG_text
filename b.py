@@ -95,6 +95,7 @@ pinecone_api_key =st.secrets["PINECONE_API_KEY"]
 # st.session_state['chat_model'] = chat_model()
 # st.session_state['cross_model'] =load_cross()
 # st.session_state['q_model'] = q_model()
+api_key=st.secrets["GPT_KEY"]
 # st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
 if 'weaviate_embed' not in st.session_state:
     st.session_state['weaviate_embed'] = None  # You can assign None or a default value
