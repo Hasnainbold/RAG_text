@@ -91,10 +91,10 @@ url =st.secrets["url"]
 url="https://jevp6yz2q4uet57pzfbfvw.c0.us-west3.gcp.weaviate.cloud"
 WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 pinecone_api_key =st.secrets["PINECONE_API_KEY"]
-# st.session_state['bi_encoder'] = load_bi_encoder()
-st.session_state['chat_model'] = load_chat_model()
-st.session_state['cross_model'] = load_cross()
-st.session_state['q_model'] = load_q_model()
+# st.session_state['bi_encoder'] =bi_encoder()
+st.session_state['chat_model'] = chat_model()
+st.session_state['cross_model'] =load_cross()
+st.session_state['q_model'] = q_model()
 st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
 if 'weaviate_embed' not in st.session_state:
     st.session_state['weaviate_embed'] = None  # You can assign None or a default value
