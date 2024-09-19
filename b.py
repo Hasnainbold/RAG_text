@@ -87,7 +87,7 @@ from dspy.retrieve.weaviate_rm import WeaviateRM
 from dspy.retrieve.pinecone_rm import PineconeRM
 
 os.environ["url"] = st.secrets["url"]
-url = os.environ["url"] 
+url =st.secrets["url"]
 url="https://jevp6yz2q4uet57pzfbfvw.c0.us-west3.gcp.weaviate.cloud"
 WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 
