@@ -944,6 +944,7 @@ st.markdown('Enter a pdf file as a source.')
 uploaded_file = st.file_uploader("Choose an pdf document...", type=["pdf"], accept_multiple_files=False)
 if uploaded_file is not None:
     with open(uploaded_file.name, mode='wb') as w:
+        print("i ma here")
         w.write(uploaded_file.getvalue())
     if not os.path.exists(os.path.join(os.getcwd(), 'pdfs')):
         os.makedirs(os.path.join(os.getcwd(), 'pdfs'))
