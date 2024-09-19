@@ -95,7 +95,7 @@ pinecone_api_key =st.secrets["PINECONE_API_KEY"]
 # st.session_state['chat_model'] = chat_model()
 # st.session_state['cross_model'] =load_cross()
 # st.session_state['q_model'] = q_model()
-api_key=st.secrets["GPT_KEY"]
+api_key=st.secrets['GPT_KEY']
 # st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
 if 'weaviate_embed' not in st.session_state:
     st.session_state['weaviate_embed'] = None  # You can assign None or a default value
@@ -473,6 +473,7 @@ class SubQueryAgent:
     print(f"Sub question: {sub_q}\n")
 
     contexts = []
+      pritn
     prompt = f"""You are given a main Question {question} and a pair of its subquestion and related sub context.
     You must generate a question based on the main question, and all of the sub-question and sub-contexts pairs.
     Output should in the format: sub-question : <sub_question>"""
@@ -489,9 +490,11 @@ class SubQueryAgent:
       if c not in uni:
         uni.append(c)
     return "@@".join(uni)
+print(nui)
 sq_agent = RunnableLambda(SubQueryAgent(vb_list, gq_model, cross_encoder).query)
 
 class AlternateQuestionAgent:
+    
   best = 2
 
   def __init__(self,vb_list,agent, cross_model=cross_encoder, parser=StrOutputParser()):
@@ -521,6 +524,7 @@ class AlternateQuestionAgent:
 
   def fetch(self,questions):
     def retrieve(question):
+      print("i am in the retriver")
       prior_context = [vb.query(question) for vb,_ in self.vb_list]
       cont = []
       for i in prior_context:
@@ -918,22 +922,23 @@ st.session_state['vb_list'] = []
 st.session_state['bi_encoder'] = bi_encoder
 st.session_state['chat_model'] = chat_model
 st.session_state['cross_model'] = cross_model
+st.session_state['cross_encoder']=cross_encoder
 st.session_state['q_model'] = q_model
 # st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
 # st.session_state['pinecone_embed'] = pine_embedding_model()
 # st.session_state['weaviate_embed'] = weaviate_embedding_model()
 os.environ["LANGCHAIN_ENDPOINT"] =st.secrets["LANGCHAIN_ENDPOINT"]
 os.environ["LANGCHAIN_API_KEY"] =st.secrets["LANGCHAIN_API_KEY"]  # Update with your API key
-os.environ["OPENAI_API_KEY"] =st.secrets["OPENAI_API_KEY"]
-api_key=st.secrets["OPENAI_API_KEY"]
+OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
+api_key=st.secrets['OPENAI_API_KEY']
 #os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
-os.environ["HUGGINGFACEHUB_API_TOKEN"] =st.secrets["HUGGINGFACEHUB_API_TOKEN"]
-os.environ["HF_TOKEN"] =st.secrets["HF_TOKEN"]
-os.environ["PINECONE_API_KEY"] =st.secrets["PINECONE_API_KEY"]
-os.environ["url"] =st.secrets["url"]
+HUGGINGFACEHUB_API_TOKEN =st.secrets["HUGGINGFACEHUB_API_TOKEN"]
+HF_TOKEN =st.secrets["HF_TOKEN"]
+PINECONE_API_KEY =st.secrets["PINECONE_API_KEY"]
+url =st.secrets["url"]
 WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 pinecone_api_key = os.environ.get("PINECONE_API_KEY")
-# st.session_state['pinecone_embed'] = pine_embedding_model()
+# st.session_state[pinecone_embed'] = pine_embedding_model()
 # st.session_state['weaviate_embed'] = weaviate_embedding_model()
 # pinecone_embed = st.session_state['pinecone_embed']
 # weaviate_embed = st.session_state['weaviate_embed']
@@ -979,4 +984,5 @@ if uploaded_file is not None:
         with st.spinner('Fetching the answer...'):
             # Assuming query is a function that takes the question as input
             answer = req.query(question)
+            print(answer)
             st.success(f"Answer: {answer}")
