@@ -911,10 +911,10 @@ st.session_state['pdf_file'] = []
 st.session_state['vb_list'] = []
 # st.session_state['Settings.embed_model'] = settings()
 # st.session_state['processor'], st.session_state['vision_model'] = load_nomic_model()
-st.session_state['bi_encoder'] = bi_encoder()
-st.session_state['chat_model'] = chat_model()
-st.session_state['cross_model'] = load_cross()
-st.session_state['q_model'] = q_model()
+st.session_state['bi_encoder'] = bi_encoder
+st.session_state['chat_model'] = chat_model
+st.session_state['cross_model'] = load_cross
+st.session_state['q_model'] = q_model
 # st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
 # st.session_state['pinecone_embed'] = pine_embedding_model()
 # st.session_state['weaviate_embed'] = weaviate_embedding_model()
@@ -933,10 +933,10 @@ st.session_state['weaviate_embed'] = weaviate_embedding_model()
 # pinecone_embed = st.session_state['pinecone_embed']
 # weaviate_embed = st.session_state['weaviate_embed']
 os.environ["HUGGINGFACE_API_TOKEN"] =st.secrets["HUGGINGFACE_API_TOKEN"]
-st.session_state['bi_encoder'] =bi_encoder()
-st.session_state['chat_model'] = chat_model()
-st.session_state['cross_model'] =load_cross()
-st.session_state['q_model'] = q_model()
+st.session_state['bi_encoder'] =bi_encoder
+st.session_state['chat_model'] = chat_model
+st.session_state['cross_model'] =load_cross
+st.session_state['q_model'] = q_model
 
 st.title('Multi-modal RAG based LLM for Information Retrieval')
 st.subheader('Converse with our Chatbot')
