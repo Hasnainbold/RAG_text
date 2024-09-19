@@ -924,6 +924,7 @@ st.session_state['q_model'] = q_model
 os.environ["LANGCHAIN_ENDPOINT"] =st.secrets["LANGCHAIN_ENDPOINT"]
 os.environ["LANGCHAIN_API_KEY"] =st.secrets["LANGCHAIN_API_KEY"]  # Update with your API key
 os.environ["OPENAI_API_KEY"] =st.secrets["OPENAI_API_KEY"]
+api_key=st.secrets["OPENAI_API_KEY"]
 #os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
 os.environ["HUGGINGFACEHUB_API_TOKEN"] =st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 os.environ["HF_TOKEN"] =st.secrets["HF_TOKEN"]
