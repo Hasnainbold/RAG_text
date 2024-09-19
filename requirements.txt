@@ -1,5 +1,5 @@
+--upgrade pip
 streamlit
-pip>=24.2
 setuptools>=50
 wheel
 dspy-ai
