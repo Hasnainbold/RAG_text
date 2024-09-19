@@ -930,8 +930,8 @@ WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 pinecone_api_key = os.environ.get("PINECONE_API_KEY")
 st.session_state['pinecone_embed'] = pine_embedding_model()
 st.session_state['weaviate_embed'] = weaviate_embedding_model()
-pinecone_embed = st.session_state['pinecone_embed']
-weaviate_embed = st.session_state['weaviate_embed']
+# pinecone_embed = st.session_state['pinecone_embed']
+# weaviate_embed = st.session_state['weaviate_embed']
 os.environ["HUGGINGFACE_API_TOKEN"] =st.secrets["HUGGINGFACE_API_TOKEN"]
 
 st.title('Multi-modal RAG based LLM for Information Retrieval')
