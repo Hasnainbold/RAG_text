@@ -1,5 +1,8 @@
 dspy-ai
-langchain openai weaviate-client ragas
+langchain 
+openai 
+weaviate-client 
+ragas
 sentence-transformers
 langchain_mistralai
 Dataset
