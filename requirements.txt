@@ -1,11 +1,5 @@
-streamlit
-setuptools>=50
-wheel
 dspy-ai
-langchain
-openai
-weaviate-client
-ragas
+langchain openai weaviate-client ragas
 sentence-transformers
 langchain_mistralai
 Dataset
@@ -13,7 +7,7 @@ mistral_inference
 langchain_openai
 pinecone-client
 pypdf
-transformers
+transformers 
 torch
 langchain_community
 langchain_pinecone
@@ -27,4 +21,3 @@ langgraph
 scikit-learn
 numpy==1.23.5
 PyPDF2
-dspy-ai
