@@ -892,6 +892,7 @@ os.environ["OPENAI_API_KEY"] =st.secrets["OPENAI_API_KEY"]
 os.environ["HUGGINGFACEHUB_API_TOKEN"] =st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 os.environ["HF_TOKEN"] =st.secrets["HF_TOKEN"]
 os.environ["PINECONE_API_KEY"] =st.secrets["PINECONE_API_KEY"]
+os.environ["url"] =st.secrets["url"]
 WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 pinecone_api_key = os.environ.get("PINECONE_API_KEY")
 os.environ["HUGGINGFACE_API_TOKEN"] =st.secrets["HUGGINGFACE_API_TOKEN"]
