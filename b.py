@@ -260,7 +260,7 @@ vb_list = [
 eval_config = RunEvalConfig(evaluators=["qa"])
 client = Client()
 
-openAIClient = OpenAI(api_key="sk-8q0dvR6f1SobL5mSEXrH1SJZvNHrJMic5a54lTJvTYT3BlbkFJ1Gz88Z0BkjaNjgzSYBk2faUJ8RBVrwhLDgKI1Evw0A")
+openAIClient =OpenAI(api_key=api_key)
 
 class chatGPT:
   def __init__(self,model,api_key, template):
