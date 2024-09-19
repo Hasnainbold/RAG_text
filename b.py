@@ -935,7 +935,7 @@ pinecone_api_key = os.environ.get("PINECONE_API_KEY")
 os.environ["HUGGINGFACE_API_TOKEN"] =st.secrets["HUGGINGFACE_API_TOKEN"]
 st.session_state['bi_encoder'] =bi_encoder
 st.session_state['chat_model'] = chat_model
-st.session_state['cross_model'] =load_cross
+st.session_state['cross_model'] =cross_model
 st.session_state['q_model'] = q_model
 
 st.title('Multi-modal RAG based LLM for Information Retrieval')
