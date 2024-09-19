@@ -260,7 +260,7 @@ vb_list = [
 eval_config = RunEvalConfig(evaluators=["qa"])
 client = Client()
 
-openAIClient = OpenAI(api_key="sk-proj-PMJ67akceG4mbeOTbBJVT3BlbkFJvLd9KWYTh4NKefAWfvl8")
+openAIClient = OpenAI(api_key="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")
 
 class chatGPT:
   def __init__(self,model,api_key, template):
@@ -273,7 +273,7 @@ class chatGPT:
     return openAIClient.chat.completions.create(messages=message, model=self.model).choices[0].message.content
 
 
-gpt_4o = chatGPT('gpt-4o', os.environ.get("OPENAI_API_KEY"), template)
+gpt_4o = chatGPT('gpt-4o', os.environ.get("OPENAI_"), template)
 gpt_model = RunnableLambda(gpt_4o.chat)
 
 gq_model = RunnableLambda(chatGPT('gpt-3.5-turbo', os.environ.get("OPENAI_API_KEY"), template).chat)
@@ -874,7 +874,9 @@ class RAGEval:
         )
         df=result.to_pandas()
         return df
+print("this first step  2.........")
 req = RAGEval(vb_list, cross_encoder)
+print("this first step 1............ ")
 req.model_prep(gpt_model) #, mistral_parser) # model details
 q_parser = RunnableLambda(lambda ans: ans.split('\n')[-1].strip()[len('Output: '):])
 alt_parser = RunnableLambda(lambda x: x[x.find('1. '):])
@@ -905,7 +907,8 @@ pinecone_embed = st.session_state['pinecone_embed']
 
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 os.environ["LANGCHAIN_PROJECT"] = st.secrets["LANGCHAIN_PROJECT"]
-os.environ["OPENAI_API_KEY"] = st.secrets["GPT_KEY"]
+OPENAI_API_KEY = st.secrets["GPT_KEY"]
+api_key=st.secrets["GPT_KEY"]
 
 st.session_state['pdf_file'] = []
 st.session_state['vb_list'] = []
