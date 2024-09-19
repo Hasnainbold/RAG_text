@@ -89,6 +89,8 @@ from dspy.retrieve.pinecone_rm import PineconeRM
 os.environ["url"] = st.secrets["url"]
 url = os.environ["url"] 
 url="https://jevp6yz2q4uet57pzfbfvw.c0.us-west3.gcp.weaviate.cloud"
+WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
+
 client = weaviate.connect_to_wcs(
     cluster_url=url,
     auth_credentials=weaviate.classes.init.Auth.api_key(WEAVIATE_API_KEY),
