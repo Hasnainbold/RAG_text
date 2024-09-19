@@ -96,9 +96,18 @@ st.session_state['chat_model'] = load_chat_model()
 st.session_state['cross_model'] = load_cross()
 st.session_state['q_model'] = load_q_model()
 st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
-st.session_state['pinecone_embed'] = pine_embedding_model()
-st.session_state['weaviate_embed'] = weaviate_embedding_model()
+if 'weaviate_embed' not in st.session_state:
+    st.session_state['weaviate_embed'] = None  # You can assign None or a default value
 
+# Safely access 'weaviate_embed' after initializing it
+weaviate_embed = st.session_state['weaviate_embed']
+
+# Initialize 'pinecone_embed' in session state if it does not exist
+if 'pinecone_embed' not in st.session_state:
+    st.session_state['pinecone_embed'] = None  # You can assign None or a default value
+
+# Safely access 'pinecone_embed' after initializing it
+pinecone_embed = st.session_state['pinecone_embed']
 client = weaviate.connect_to_wcs(
     cluster_url=url,
     auth_credentials=weaviate.classes.init.Auth.api_key(WEAVIATE_API_KEY),
