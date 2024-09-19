@@ -973,5 +973,5 @@ if uploaded_file is not None:
         # Display the answer to the question
         with st.spinner('Fetching the answer...'):
             # Assuming query is a function that takes the question as input
-            answer = query(question)
+            answer = req.query(question)
             st.success(f"Answer: {answer}")
