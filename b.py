@@ -890,6 +890,18 @@ req.query_agent_prep(q_model, parser=RunnableLambda(lambda x: x[x.find('1. '):])
 
 # pinecone_embed = st.session_state['pinecone_embed']
 # weaviate_embed = st.session_state['weaviate_embed']
+if 'weaviate_embed' not in st.session_state:
+    st.session_state['weaviate_embed'] = None  # You can assign None or a default value
+
+# Safely access 'weaviate_embed' after initializing it
+weaviate_embed = st.session_state['weaviate_embed']
+
+# Initialize 'pinecone_embed' in session state if it does not exist
+if 'pinecone_embed' not in st.session_state:
+    st.session_state['pinecone_embed'] = None  # You can assign None or a default value
+
+# Safely access 'pinecone_embed' after initializing it
+pinecone_embed = st.session_state['pinecone_embed']
 
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 os.environ["LANGCHAIN_PROJECT"] = st.secrets["LANGCHAIN_PROJECT"]
