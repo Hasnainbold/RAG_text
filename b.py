@@ -904,8 +904,8 @@ st.session_state['chat_model'] = load_chat_model()
 st.session_state['cross_model'] = load_cross()
 st.session_state['q_model'] = load_q_model()
 st.session_state['extractor'], st.session_state['image_model'] = load_image_model("google/vit-base-patch16-224-in21k")
-st.session_state['pinecone_embed'] = pine_embedding_model()
-st.session_state['weaviate_embed'] = weaviate_embedding_model()
+# st.session_state['pinecone_embed'] = pine_embedding_model()
+# st.session_state['weaviate_embed'] = weaviate_embedding_model()
 os.environ["LANGCHAIN_ENDPOINT"] =st.secrets["LANGCHAIN_ENDPOINT"]
 os.environ["LANGCHAIN_API_KEY"] =st.secrets["LANGCHAIN_API_KEY"]  # Update with your API key
 os.environ["OPENAI_API_KEY"] =st.secrets["OPENAI_API_KEY"]
@@ -916,6 +916,8 @@ os.environ["PINECONE_API_KEY"] =st.secrets["PINECONE_API_KEY"]
 os.environ["url"] =st.secrets["url"]
 WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 pinecone_api_key = os.environ.get("PINECONE_API_KEY")
+st.session_state['pinecone_embed'] = pine_embedding_model()
+st.session_state['weaviate_embed'] = weaviate_embedding_model()
 os.environ["HUGGINGFACE_API_TOKEN"] =st.secrets["HUGGINGFACE_API_TOKEN"]
 
 st.title('Multi-modal RAG based LLM for Information Retrieval')
