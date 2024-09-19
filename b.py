@@ -20,9 +20,9 @@ from langchain_openai import ChatOpenAI
 import requests
 import openai
 import multiprocessing
-# from langchain.document_loaders import TextLoader, JSONLoader
-# from langchain.docstore.document import Document
-# from langchain.embeddings import OpenAIEmbeddings
+from langchain.document_loaders import TextLoader, JSONLoader
+from langchain.docstore.document import Document
+from langchain.embeddings import OpenAIEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
 import weaviate
 # from langchain.vectorstores import Weaviate
