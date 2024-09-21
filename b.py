@@ -88,7 +88,7 @@ from dspy.retrieve.pinecone_rm import PineconeRM
 
 os.environ["url"] = st.secrets["url"]
 url =st.secrets["url"]
-url="https://jevp6yz2q4uet57pzfbfvw.c0.us-west3.gcp.weaviate.cloud"
+url="https://nmcbryzotwmdzaala0qvcq.c0.us-west3.gcp.weaviate.cloud"
 WEAVIATE_API_KEY=st.secrets["WEAVIATE_API_KEY"]
 pinecone_api_key =st.secrets["PINECONE_API_KEY"]
 # st.session_state['bi_encoder'] =bi_encoder()
@@ -657,7 +657,7 @@ class FeedbackSystem:
     self.db.add_documents([Document(feedback)])
     self.feedback_retriever(self.top_k)
 
-fs = FeedbackSystem('feedback_loop.txt', embeddings, 'https://jevp6yz2q4uet57pzfbfvw.c0.us-west3.gcp.weaviate.cloud', 'mr8JZynXMHa7qAQ2aXE1JNSfky8X9pjeaW0Z')
+fs = FeedbackSystem('feedback_loop.txt', embeddings, 'https://nmcbryzotwmdzaala0qvcq.c0.us-west3.gcp.weaviate.cloud', '7Bee40vRk0Itrl4WZve2fty2NwU1TMucldyL')
 
 
 def heatmap_gen(question, num=5):
@@ -890,7 +890,7 @@ aug_parser = RunnableLambda(lambda ans: ("".join(ans.split('\n')[1:])).strip())
 
 req.query_agent_prep(gq_model) #, parser=alt_parser)
 
-req.feedback_prep('feedback_loop.txt', OpenAIEmbeddings(model='text-embedding-3-large'), 'https://jevp6yz2q4uet57pzfbfvw.c0.us-west3.gcp.weaviate.cloud', 'mr8JZynXMHa7qAQ2aXE1JNSfky8X9pjeaW0Z') # file, embedding, url, api):
+req.feedback_prep('feedback_loop.txt', OpenAIEmbeddings(model='text-embedding-3-large'), 'https://nmcbryzotwmdzaala0qvcq.c0.us-west3.gcp.weaviate.cloud', '7Bee40vRk0Itrl4WZve2fty2NwU1TMucldyL') # file, embedding, url, api):
 
 req.query_agent_prep(q_model, parser=RunnableLambda(lambda ans: ("".join(ans.split('\n')[1:])).strip()))
 
