@@ -17,6 +17,10 @@ st.set_page_config(
    initial_sidebar_state="collapsed"
 )
 from langchain_openai import ChatOpenAI
+from uuid import uuid4
+from streamlit_feedback import streamlit_feedback
+
+
 import requests
 import openai
 import multiprocessing
@@ -26,6 +30,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
 import weaviate
 # from langchain.vectorstores import Weaviate
+from src.Databases import *
 
 import weaviate
 import asyncio
@@ -69,6 +74,8 @@ from langchain.smith import RunEvalConfig
 from langchain_core.runnables import chain
 from langsmith import Client
 import re
+from langsmith.run_trees import RunTree
+
 from langchain_core.messages import HumanMessage
 from langgraph.graph import END, MessageGraph, Graph, StateGraph
 from langchain_core.tools import tool
@@ -139,6 +146,7 @@ class Decider(dspy.Signature):
     decision = dspy.OutputField(desc="Yes or No")
 
 decider = dspy.Predict(Decider)
+fd = False
 
 
 def rag_chain(question):
@@ -881,6 +889,12 @@ class RAGEval:
         df=result.to_pandas()
         return df
 print("this first step  2.........")
+feedback_db = TextDatabase('feedback', './lancedb/rag')
+feedback_db.model_prep(weaviate_embed, RecursiveCharacterTextSplitter(chunk_size=1330, chunk_overlap=35))
+with open('./feedback_loop.txt', 'r') as f:
+  st.write("this is the feedback nnnn")
+  feedback = f.read()
+feedback_db.upsert(feedback)
 req = RAGEval(vb_list, cross_encoder)
 print("this first step 1............ ")
 req.model_prep(gpt_model) #, mistral_parser) # model details
@@ -948,42 +962,187 @@ st.session_state['bi_encoder'] =bi_encoder
 st.session_state['chat_model'] = chat_model
 st.session_state['cross_model'] =cross_model
 st.session_state['q_model'] = q_model
+if "run_id" not in st.session_state:
+    st.session_state.run_id = uuid4()
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+if 'image' not in st.session_state:
+    st.session_state['image'] = []
+if 'conv_id' not in st.session_state:
+    st.session_state['conv_id'] = {}
+
+client = Client(api_url=st.secrets["LANGSMITH_URL"], api_key=st.secrets["LANGSMITH_API_KEY"])
+mes = []
+for message in st.session_state.messages:
+    if type(message['content']) is dict:
+        mes.append(message['role']+": "+message["content"]["text"])
+    else:
+        mes.append(message['role'] + ": " + message["content"])
+print(f"Run_ID -> {st.session_state.run_id}, {mes}")
 
 st.title('Multi-modal RAG based LLM for Information Retrieval')
 st.subheader('Converse with our Chatbot')
 st.markdown('Enter a pdf file as a source.')
+open('./feedback.txt', 'w').close()
 
-uploaded_file = st.file_uploader("Choose a PDF document...", type=["pdf"], accept_multiple_files=False)
+rt = RunTree(
+    name="RAG RunTree",
+    run_type="chain",
+    inputs={"messages": mes},
+    id=st.session_state.run_id
+)
 
-if uploaded_file is not None:
-    # Create a directory for storing PDF files if it doesn't exist
-    pdf_directory = os.path.join(os.getcwd(), 'pdfs')
-    if not os.path.exists(pdf_directory):
-        os.makedirs(pdf_directory)
 
-    # Define the file path where the PDF will be saved
-    file_path = os.path.join(pdf_directory, uploaded_file.name)
+def fbcb():
+    if st.session_state.fb_k is None:
+        st.session_state.fb_k = {'type': 'thumbs', 'score': '👎', 'text': ''}
+    message_id = len(st.session_state.messages) - 1
+    if message_id >= 0:
+        st.session_state.messages[message_id]["feedback"] = st.session_state.fb_k
 
-    # Write the file to the specified path
-    with open(file_path, mode='wb') as f:
-        f.write(uploaded_file.getbuffer())
+    s = f"The feedback for {prompt} "
+    fb = "NEGATIVE " if st.session_state.fb_k["score"] == '👎' else "POSITIVE "
+    for _ in st.session_state.messages:
+        if st.session_state.fb_k['text'] is None:
+            st.session_state.fb_k['text'] = ""
+        s += f'is {fb} and the response is '
+        if fb == "NEGATIVE ":
+            s += st.session_state.fb_k['text']
+        else:
+            fsa = [d['content'] for d in st.session_state.messages if d["role"] == 'assistant']
+            if isinstance(fsa[-1], str):
+                s += fsa[-1]
+            else:
+                s += fsa[-1]['text']
+        s += '\n'
+    with open('./feedback.txt', 'r+') as fd:  # feedback records all feedback for this run
+        fd.write(s)
+    with open('./feedback_loop.txt', 'r+') as fd:  # feedback loop records feedback for all runs
+        fd.write(s)
+    feedback_db.upsert(s)
+    with open('./feedback.txt', 'r') as fd:
+        feed = fd.read()
+    client.create_feedback(
+        run_id=st.session_state.run_id,
+        key="fb_k",
+        score=1 if fb == "Positive" else -1,
+        feedback_source_type="model",
+        comment=feed
+    )
 
+import os
+import glob
+
+current_directory = os.getcwd()
+# Define the directory where your PDFs are located (subdirectory 'pdfs')
+pdf_directory = os.path.join(current_directory, "pdfs")
+
+# Search for all PDF files in the 'pdfs' directory
+pdf_files = glob.glob(os.path.join(pdf_directory, "*.pdf"))
+
+# Check if there are any PDF files in the directory
+if pdf_files:
+    # Sort files by modification time and get the latest one
+    latest_pdf_file = max(pdf_files, key=os.path.getmtime)
+    
+    # Construct the full file path to the latest PDF
+    file_path = os.path.join(pdf_directory, os.path.basename(latest_pdf_file))
+    
+    print(f"Final path to the latest PDF: {file_path}")
+else:
+    print("No PDF files found in the directory.")
+
+
+# file_path = r"C:/Users/HASNAIN/Downloads/RAG_06_09/RAG/pdfs/IIT_bombay_Resume_template_2021 (66).pdf"
+
+# Write the file to the specified path
+# with open(file_path, mode='wb') as f:
+    # f.write(uploaded_file.getbuffer())
+# 
     # Store the file path in session state
-    st.session_state['pdf_file'] = file_path
+st.session_state['pdf_file'] = file_path
+print("i am come to pdf_path ")
 
-    # Extracting the PDF content
-    with st.spinner('Extracting...'):
-        # Assuming read_pdf function takes the file path as input
-        vb_list = read_pdf(st.session_state['pdf_file'])  # Corrected to use session state
-        st.session_state['vb_list'] = vb_list
+# Extracting the PDF content
+with st.spinner('Extracting...'):
+    # Assuming read_pdf function takes the file path as input
+    vb_list = read_pdf(st.session_state['pdf_file'])  # Corrected to use session state
+    # st.session_state['vb_list'] = vb_list
+    st.write("yes i am in the vblist ")
 
-    # Ask the user for a question
-    question = st.text_input("Enter your question:", "How are names present in the context?")
 
-    if st.button("Submit Question"):
-        # Display the answer to the question
-        with st.spinner('Fetching the answer...'):
-            # Assuming query is a function that takes the question as input
-            answer = req.query(question)
-            print(answer)
-            st.success(f"Answer: {answer}")
+question = st.text_input("Enter your question:", "How are names present in the context?")
+
+if st.button("Submit Question"):
+    fd = True
+    # Display the answer to the question
+    with st.spinner('Fetching the answer...'):
+        # Assuming query is a function that takes the question as input
+        answer = req.query(question)
+        print(answer)
+        st.success(f"Answer: {answer}")
+
+    
+
+
+
+
+
+
+
+# uploaded_file = st.file_uploader("Choose a PDF document...", type=["pdf"], accept_multiple_files=False)
+
+# if uploaded_file is not None:
+#     # Create a directory for storing PDF files if it doesn't exist
+#     pdf_directory = os.path.join(os.getcwd(), 'pdfs')
+#     if not os.path.exists(pdf_directory):
+#         os.makedirs(pdf_directory)
+
+#     # Define the file path where the PDF will be saved
+#     file_path = os.path.join(pdf_directory, uploaded_file.name)
+
+#     # Write the file to the specified path
+#     with open(file_path, mode='wb') as f:
+#         f.write(uploaded_file.getbuffer())
+
+#     # Store the file path in session state
+#     st.session_state['pdf_file'] = file_path
+
+#     # Extracting the PDF content
+#     with st.spinner('Extracting...'):
+#         # Assuming read_pdf function takes the file path as input
+#         vb_list = read_pdf(st.session_state['pdf_file'])  # Corrected to use session state
+#         st.session_state['vb_list'] = vb_list
+
+#     # Ask the user for a question
+#     question = st.text_input("Enter your question:", "How are names present in the context?")
+
+#     if st.button("Submit Question"):
+#         fd = True
+#         # Display the answer to the question
+#         with st.spinner('Fetching the answer...'):
+#             # Assuming query is a function that takes the question as input
+#             answer = req.query(question)
+#             print(answer)
+#             st.success(f"Answer: {answer}")
+
+if fd:
+    with st.form('form'):
+      streamlit_feedback(feedback_type="thumbs", align="flex-start",
+                        key='fb_k', optional_text_label="[Optional] Please provide an explanation")
+      submit_button = st.form_submit_button('Save feedback', on_click=fbcb)
+      if not submit_button:
+          print('Click the Submit button')
+
+with open('./feedback.txt', 'r')as f:
+  rt.end(outputs={'outputs': f.read()})
+rt.post()
+
+
+def reset_conversation():
+  st.session_state.messages = []
+  st.session_state['image'] = []
+  st.session_state['conv_id'] = {}
+
+
+st.button('Reset Chat', on_click=reset_conversation)
