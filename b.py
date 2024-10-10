@@ -30,7 +30,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
 import weaviate
 # from langchain.vectorstores import Weaviate
-from src.Databases import *
+# from src.Databases import *
 
 import weaviate
 import asyncio
